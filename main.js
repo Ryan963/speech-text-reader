@@ -4,7 +4,9 @@ const textArea = document.getElementById('text')
 const readBtn = document.getElementById('read')
 const toggleBtn = document.getElementById('toggle')
 const closeBtn = document.querySelector('.close')
-function makeData(){
+const textBox = document.getElementById('text-box')
+const message = new SpeechSynthesisUtterance();
+function createBox(){
     const data = [
         {
           image: './img/drink.jpg',
@@ -58,18 +60,66 @@ function makeData(){
     
     data.forEach(addNewItem)
 }
-makeData()
+
+
+function getVoices(){
+    let voicesList = speechSynthesis.getVoices()
+    voicesList.forEach(voice => {
+        const option = document.createElement('option')
+        option.value = voice.name
+        option.innerText = `${voice.name} ${voice.lang}`
+        voices.appendChild(option)
+    })
+}
+function setTextMessage(text){
+    message.text = text
+}
+
+
+function speakText(){
+    speechSynthesis.speak(message)
+}
+
+
+function changeVoice(e){
+    let voicesList = speechSynthesis.getVoices()
+    message.voice = voicesList.find(voice => voice.name === e.target.value)
+}
 
 
 function addNewItem(item){
-    main.innerHTML += `
-    <div class = 'box'>
-        <img src="${item.image}" alt = "${item.text}">
-        <div class="info"><h3>${item.text}</h3></div>
-    </div>  
-    `
+    const box = document.createElement('div')
+    box.classList.add('box')
+    box.innerHTML = ` <img src="${item.image}" alt = "${item.text}">
+        <div class="info"><h3>${item.text}</h3></div>`
+    box.addEventListener('click', () => {
+        setTextMessage(item.text)
+        speakText()
+        box.classList.add('active')
+        setTimeout(() => {box.classList.remove('active')}, 800);
+    });
+    main.appendChild(box)
 }
-x
+
+
+
+function events(){
+    createBox()
+    getVoices()
+    toggleBtn.addEventListener('click',() =>{
+        textBox.classList.toggle('show')
+    })
+    closeBtn.addEventListener('click', () => {
+        textBox.classList.remove('show')
+    })
+    speechSynthesis.addEventListener('voiceschanged',getVoices)
+    voices.addEventListener('change', changeVoice)
+    readBtn.addEventListener('click', () => {
+        setTextMessage(textArea.value)
+        speakText()
+    })
+}
+events()
 
 
 

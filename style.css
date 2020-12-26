@@ -42,11 +42,12 @@ body {
     padding: 10px 10px;
     position: absolute;
     transform: translateY(-100%);
+    transition: transform 0.3s ease-out;
 }
 
 .text-box.show {
     transform: translateY(50%);
-    transition: transform 0.3s ease-in;
+    transition: transform 0.3s ease-in-out;
     
     
 }
@@ -88,7 +89,7 @@ main {
 }
 
 .box.active {
-    box-shadow: 0 0 10px 5px darksalmon;
+    box-shadow: 0 0 10px 5px red;
 }
 
 
